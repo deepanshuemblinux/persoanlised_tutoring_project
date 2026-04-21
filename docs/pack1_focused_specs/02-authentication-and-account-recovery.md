@@ -1,7 +1,8 @@
 - This spec is derived from: pack1_final_implementation_details.md
 - This spec owns: Authentication and account recovery
 - This spec strictly preserves original implementation details without modification
-- This spec must be used with shared contract spec: docs/pack1_focused_specs/01-platform-ux-and-shared-contracts.md
+- This spec must be used with shared contract spec: specs/01-platform-ux-and-shared-contracts.md
+- Mirror/reference copy: docs/pack1_focused_specs/01-platform-ux-and-shared-contracts.md
 - Fallback context source: docs/pack1_final_implementation_details.md
 
 # 6. Screen-by-Screen UX Details
@@ -153,6 +154,10 @@ Create a student signup draft, verify email, then place user into approval queue
 **Behavior**
 - generic success response to avoid user enumeration
 - OTP is sent only if the account exists and email is verified
+- OTP resend cooldown: 60 seconds
+- OTP expiry: 10 minutes
+- Maximum OTP verification attempts: 5
+- Lock duration after max attempts: 15 minutes
 
 ## 6.27 Reset Password
 
@@ -216,6 +221,8 @@ Create a student signup draft, verify email, then place user into approval queue
 - Login uses email + password
 - Password reset invalidates old password immediately
 - Locked, pending, or rejected states affect login routing
+- Locked account returns `403 ACCOUNT_LOCKED`
+- Account lock model is persisted with `is_locked`, `locked_until`, and `lock_reason`
 
 
 # 9. Pack 1 High-Level Design (HLD)
@@ -278,7 +285,7 @@ Responsibilities:
 3. Server creates reset OTP record
 4. Server delivers OTP
 5. User submits OTP
-6. Server validates OTP and returns short-lived reset token/session
+6. Server validates OTP via `POST /api/v1/auth/forgot-password/verify-otp` and returns short-lived reset token/session
 7. User submits new password
 8. Server hashes password and updates user record
 9. Server expires all outstanding reset tokens and invalidates old sessions if configured
@@ -300,6 +307,9 @@ Responsibilities:
 | password_hash | varchar(255) | no | bcrypt/argon2 hash |
 | approval_status | varchar(20) | no | PENDING / APPROVED / REJECTED |
 | rejection_reason | text | yes | admin-set |
+| is_locked | boolean | no | default false |
+| locked_until | timestamptz | yes | lock expiry for temporary lock |
+| lock_reason | varchar(100) | yes | e.g. OTP_ATTEMPTS_EXCEEDED |
 | is_active | boolean | no | default true |
 | last_login_at | timestamptz | yes | |
 | created_at | timestamptz | no | |
@@ -310,6 +320,7 @@ Responsibilities:
 - unique(institute_id, phone)
 - check(role in ('ADMIN','TUTOR','STUDENT'))
 - check(approval_status in ('PENDING','APPROVED','REJECTED'))
+- check(locked_until is null or locked_until > created_at)
 
 **Indexes**
 - index on (role, approval_status)
@@ -318,7 +329,7 @@ Responsibilities:
 
 ### `password_reset_sessions`
 
-Optional but cleaner than overloading OTP tables for reset completion.
+Mandatory in Pack 1 for reset token/session completion.
 
 | Column | Type | Null | Notes |
 |---|---|---:|---|
@@ -399,8 +410,9 @@ Same pattern as tutor signup, without subjects/classes.
 ```
 
 **Special responses**
-- recommended: `403 ACCOUNT_PENDING_APPROVAL`
-- recommended: `403 ACCOUNT_REJECTED`
+- `403 ACCOUNT_PENDING_APPROVAL`
+- `403 ACCOUNT_REJECTED`
+- `403 ACCOUNT_LOCKED`
 
 ### `POST /api/v1/auth/forgot-password`
 
@@ -417,6 +429,28 @@ Same pattern as tutor signup, without subjects/classes.
 ```json
 {
   "message": "If the account exists, a reset OTP has been sent."
+}
+```
+
+### `POST /api/v1/auth/forgot-password/verify-otp`
+
+Validates reset OTP and returns a short-lived reset token/session.
+
+**Request**
+
+```json
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
+```
+
+**Response 200**
+
+```json
+{
+  "reset_token": "short-lived-token",
+  "expires_in_seconds": 900
 }
 ```
 
@@ -456,4 +490,7 @@ Returns approval status, allowed routes, and key onboarding flags.
 - phone normalized to E.164 before uniqueness checks
 - password minimum length = 8
 - recommended password policy: at least 1 uppercase, 1 lowercase, 1 digit
-
+- OTP resend cooldown = 60 seconds
+- OTP expiry = 10 minutes
+- OTP max verification attempts = 5
+- OTP lock duration after max attempts = 15 minutes
