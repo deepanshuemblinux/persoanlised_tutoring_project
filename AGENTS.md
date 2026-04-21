@@ -547,6 +547,23 @@ Codex should:
 - keep backend modules cohesive and explicit
 - favor maintainability and portability over clever shortcuts
 
+## 20A. Task Completion Testing and Clarification Policy
+
+After implementing each task, developers must run the full relevant test suite before considering the task complete.
+
+Minimum required coverage per task:
+- backend tests (unit + integration)
+- frontend tests (unit/component)
+- cross-layer integration tests where the task impacts API, state transitions, auth, workflows, or persistence
+
+Rules:
+- The exact test cases and command variants may be decided by the developer per task based on scope and impact.
+- Do not mark a task as complete unless all selected tests pass.
+- For every task, generate a concise test report and attach it to task notes/PR.
+- The test report must include: tests executed, command(s) used, pass/fail status, and any skipped tests with reason and risk.
+- If implementation details are unclear or ambiguous, ask for clarification before coding.
+- Do not assume missing behavior, business rules, API contracts, or edge-case handling without confirmation.
+
 ---
 
 ## 21. Non-Negotiable Principles
@@ -575,4 +592,3 @@ The following items should be explicitly confirmed before freezing this AGENT.md
 4. which SMS provider is frozen for production
 5. whether a worker container is included from day 1 or added later
 6. whether direct browser-to-object-storage uploads are part of v1 or a later optimization
-
