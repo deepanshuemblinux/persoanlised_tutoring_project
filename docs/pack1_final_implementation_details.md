@@ -261,6 +261,46 @@ Out of scope in this pack:
 - in-app payment collection UI
 - admin payment collection workflow
 
+## Visual Reference Usage Rules
+
+For UI implementation, developer must treat the referenced image files as the primary visual source of truth for layout and presentation, while this specification remains the source of truth for behavior, data, validations, states, and API interactions.
+
+Rules:
+- For every screen that includes a visual reference filename, developer must use that image as the target UI.
+- developer must match the referenced screen’s layout, spacing, hierarchy, section grouping, alignment, CTA placement, and visible component structure as closely as practical.
+- developer must not redesign, simplify, or restyle the screen unless required by technical constraints or explicitly instructed.
+- If the visual mockup conflicts with this spec:
+  - behavior, validation, permissions, and state rules come from this spec
+  - visual layout and presentation come from the referenced image
+- If a screen has multiple reference images, developer must use all of them together and infer the screen states from the filenames and surrounding section details.
+- If any visual detail is ambiguous, developer must choose the closest practical implementation and list the assumption in implementation notes.
+- developer must reuse project components/tokens where possible while preserving the visual intent of the mockup.
+- developer must compare the implemented screen against the referenced image and iterate to reduce visible mismatch.
+
+## State-Specific Mockup Rule
+
+If separate mockups are provided for different UI states of the same screen, developer must implement all referenced states, including but not limited to:
+- default
+- loading
+- success
+- empty
+- validation error
+- warning
+- approved/unapproved variants
+- paid/unpaid variants
+
+If only one mockup is provided, developer must still implement required states from the behavioral rules in this spec using the same design language.
+
+## UI Implementation Instruction
+
+When implementing screens from this document:
+- use the image filenames listed under each screen as direct visual targets
+- preserve the mockup’s visible layout and structure
+- implement all fields, states, and actions defined in the screen spec
+- do not invent alternate layouts
+- do not omit visible sections present in the referenced mockup
+- after implementation, compare the rendered screen to the referenced image and adjust until the result is visually close
+
 # 5. Actor-Wise Screen Inventory
 
 ## 5.1 Tutor screens
@@ -314,6 +354,9 @@ Out of scope in this pack:
 # 6. Screen-by-Screen UX Details
 
 ## 6.1 Tutor Sign Up
+
+### Visual References:
+- `ui_mock_screens/Tutor_Sign_Up.png`
 
 **Purpose**  
 Create a tutor signup draft, verify email, then place user into approval queue.
@@ -369,6 +412,9 @@ Create a tutor signup draft, verify email, then place user into approval queue.
 
 ## 6.2 Tutor Verify Email OTP
 
+### Visual References:
+- `ui_mock_screens/Tutor_Verify_Email_OTP.png`
+
 **Fields**
 - masked_email
 - otp_code (6 digits)
@@ -388,6 +434,9 @@ Create a tutor signup draft, verify email, then place user into approval queue.
 When email is verified, account is created in `PENDING` approval state.
 
 ## 6.3 Tutor Login
+
+### Visual References:
+- `ui_mock_screens/Tutor_Login.png`
 
 **Fields**
 - email
@@ -410,6 +459,9 @@ When email is verified, account is created in `PENDING` approval state.
 
 ## 6.4 Tutor Approval Pending
 
+### Visual References:
+- `ui_mock_screens/Tutor_Approval_Pending.png`
+
 **Content**
 - pending approval message
 - last updated timestamp if available
@@ -422,6 +474,9 @@ When email is verified, account is created in `PENDING` approval state.
 
 ## 6.5 Tutor Dashboard Landing
 
+### Visual References:
+- `ui_mock_screens/Tutor_Dashboard_Landing.png`
+
 **Pack 1 scope only**
 - welcome header
 - assigned students count
@@ -429,6 +484,9 @@ When email is verified, account is created in `PENDING` approval state.
 - empty-state cards when no assignments or mappings exist
 
 ## 6.6 Student Sign Up
+
+### Visual References:
+- `ui_mock_screens/Student_Sign_Up.png`
 
 **Purpose**  
 Create a student signup draft, verify email, then place user into approval queue.
@@ -459,12 +517,18 @@ Create a student signup draft, verify email, then place user into approval queue
 
 ## 6.7 Student Verify Email OTP
 
+### Visual References:
+- `ui_mock_screens/Student_Verify_Email_OTP.png`
+
 Same interaction model as tutor email verification.
 
 **Completion rule**
 When email is verified, account is created in `PENDING` approval state.
 
 ## 6.8 Student Login
+
+### Visual References:
+- `ui_mock_screens/Student_Login.png`
 
 **Fields**
 - email
@@ -482,12 +546,18 @@ When email is verified, account is created in `PENDING` approval state.
 
 ## 6.9 Student Approval Pending
 
+### Visual References:
+- `ui_mock_screens/Student_Approval_Pending.png`
+
 **Content**
 - pending approval message
 - note that enrollment is available after approval
 - logout
 
 ## 6.10 Student Dashboard Landing
+
+### Visual References:
+- `ui_mock_screens/Student_Dashboard_Landing.png`
 
 **Pack 1 scope only**
 - profile summary
@@ -508,6 +578,9 @@ When email is verified, account is created in `PENDING` approval state.
 - **Enrollment approved. Registration fee pending.**
 
 ## 6.11 Request Course Enrollment
+
+### Visual References:
+- `ui_mock_screens/Request_Course_Enrollment.png`
 
 **Purpose**
 Allow approved student to request enrollment into a board + class + subject course.
@@ -550,6 +623,9 @@ After submit, the student must be able to continue to:
 
 ## 6.12 Enrollment Request Submitted
 
+### Visual References:
+- `ui_mock_screens/Enrollment_Request_Submitted.png`
+
 **Content**
 - success message
 - requested course summary
@@ -564,6 +640,9 @@ After submit, the student must be able to continue to:
 - link to Enrollment Status View
 
 ## 6.13 Enrollment Status View
+
+### Visual References:
+- `ui_mock_screens/Enrollment_Status_View.png`
 
 **Displays for each course request**
 - board
@@ -594,6 +673,10 @@ After submit, the student must be able to continue to:
   - notify admin of payment
 
 ## 6.14 Pay Registration Fee
+
+### Visual References:
+- `ui_mock_screens/Pay_Registration_Fee.png`
+- `ui_mock_screens/Registration_Fee_Payment_Instructions.png`
 
 **Purpose**
 Provide a dedicated page that takes the student to payment gateway hosted payment for registration fee.
@@ -629,6 +712,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 
 ## 6.15 Admin Login
 
+### Visual References:
+- `ui_mock_screens/Admin_Login.png`
+
 **Fields**
 - email
 - password
@@ -639,6 +725,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 
 ## 6.16 Admin Dashboard
 
+### Visual References:
+- `ui_mock_screens/Admin_Dashboard.png`
+
 **Widgets**
 - pending tutor approvals count
 - pending student approvals count
@@ -648,6 +737,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 - recent actions feed
 
 ## 6.17 Pending Tutor Approvals
+
+### Visual References:
+- `ui_mock_screens/Pending_Tutor_Approvals.png`
 
 **Table columns**
 - name
@@ -667,6 +759,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 
 ## 6.18 Tutor Review Detail
 
+### Visual References:
+- `ui_mock_screens/Tutor_Review_Detail.png`
+
 **Sections**
 - identity details
 - verification status
@@ -685,6 +780,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 
 ## 6.19 Pending Student Approvals
 
+### Visual References:
+- `ui_mock_screens/Pending_Student_Approvals.png`
+
 **Table columns**
 - name
 - email
@@ -695,6 +793,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 - actions
 
 ## 6.20 Student Review Detail
+
+### Visual References:
+- `ui_mock_screens/Student_Review_Detail.png`
 
 **Sections**
 - identity details
@@ -712,6 +813,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 - Reject with reason
 
 ## 6.21 Enrollment Requests List
+
+### Visual References:
+- `ui_mock_screens/Enrollment_Requests_List.png`
 
 **Table columns**
 - student_name
@@ -742,6 +846,9 @@ Provide a dedicated page that takes the student to payment gateway hosted paymen
 - A small indicator may be shown if useful: payment expected via gateway-hosted flow
 
 ## 6.22 Enrollment Review Detail
+
+### Visual References:
+- `ui_mock_screens/Enrollment_Review_Detail.png`
 
 **Sections**
 - student info
@@ -778,6 +885,9 @@ If fee status is `UNPAID` and admin clicks Approve:
 
 ## 6.23 Tutor-Student Mapping Screen
 
+### Visual References:
+- `ui_mock_screens/Tutor-Student_Mapping_Screen.png`
+
 **Fields**
 - student (read only)
 - course (read only)
@@ -795,6 +905,9 @@ If fee status is `UNPAID` and admin clicks Approve:
 - mapping allowed even if fee is unpaid, provided enrollment is approved
 
 ## 6.24 Institute Enrollment Settings
+
+### Visual References:
+- `ui_mock_screens/Institute_Enrollment_Settings.png`
 
 **Purpose**
 Allow admin to configure global registration fee settings.
@@ -824,6 +937,9 @@ Allow admin to configure global registration fee settings.
 
 ## 6.25 Forgot Password
 
+### Visual References:
+- `ui_mock_screens/Forgot_Password.png`
+
 **Fields**
 - email
 
@@ -837,6 +953,9 @@ Allow admin to configure global registration fee settings.
 
 ## 6.26 Verify Reset OTP
 
+### Visual References:
+- `ui_mock_screens/Verify_Reset_OTP.png`
+
 **Fields**
 - email
 - otp_code
@@ -846,6 +965,9 @@ Allow admin to configure global registration fee settings.
 - Resend OTP
 
 ## 6.27 Reset Password
+
+### Visual References:
+- `ui_mock_screens/Reset_Password.png`
 
 **Fields**
 - new_password
@@ -861,6 +983,9 @@ Allow admin to configure global registration fee settings.
 
 ## 6.28 Account Rejected
 
+### Visual References:
+- `ui_mock_screens/Account_Rejected.png`
+
 **Content**
 - rejection message
 - rejection reason if configured to show
@@ -869,10 +994,23 @@ Allow admin to configure global registration fee settings.
 
 ## 6.29 Unauthorized / Access Denied
 
+### Visual References:
+- `ui_mock_screens/Unauthorized_-_Access_Denied.png`
+
 Shown when:
 - role mismatch
 - inactive session
 - protected route access without permission
+
+## 6.30 Generic Errors / Session Expired
+
+### Visual References:
+- `ui_mock_screens/Session_Expired.png`
+- `ui_mock_screens/Generic_Error_State.png`
+
+Shown when:
+- session expired
+- generic errors
 
 # 7. Primary Pack 1 User Flows
 
